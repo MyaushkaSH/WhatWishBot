@@ -11,10 +11,10 @@
             <ThresholdFilter level="${console.thresholdFilter}"/>
             <PatternLayout pattern="%d %-5p [%t] %c{10} - %m%n"/>
         </Console>
-        <Socket name="SOCKET" host="${socket.host}" port="${socket.port}" immediateFlush="true">
+        <!--<Socket name="SOCKET" host="${socket.host}" port="${socket.port}" immediateFlush="true">
             <ThresholdFilter level="${socket.thresholdFilter}"/>
             <JSONLayout eventEol="true" compact="true"/>
-        </Socket>
+        </Socket>-->
         <Async name="ASYNC">
             <AppenderRef ref="CONSOLE"/>
             <AppenderRef ref="SOCKET"/>
