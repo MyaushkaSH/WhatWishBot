@@ -2,10 +2,12 @@ version: '3.4'
 
 services:
   whatwish:
-    image: consul:1.1.0
+    image: openjdk:17
     hostname: localhost
     ports:
-      - "7777:7777"
+      - "8080:8080"
+    links:
+      - redis
   redis:
     image: redis:5.0.5
     container_name: redis

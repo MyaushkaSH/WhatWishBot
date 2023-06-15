@@ -11,13 +11,13 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 public class WhatWishBotHeart {
-    private static final String template = "AAAAAA, %s?";
+    private static final String template = "WHAZAAAAAAAAAAAAP, %s?";
     private final AtomicLong counter = new AtomicLong();
     private final Logger logger = LoggerFactory.getLogger(WhatWishBotHeart.class);
 
-    @RequestMapping("/")
+    @RequestMapping("/what")
     public Greeting greeting(@RequestParam(value="name", required=false, defaultValue="WAZZZAAAAAAAAP!!!!") String name) {
-        logger.info("Прилетел запрос");
+        logger.info("Прилетел запрос " + name);
         return new Greeting(counter.incrementAndGet(),
                 String.format(template, name));
     }
