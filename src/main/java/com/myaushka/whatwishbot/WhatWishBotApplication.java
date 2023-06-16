@@ -15,13 +15,11 @@ public class WhatWishBotApplication {
 	private static Logger logger = LoggerFactory.getLogger(WhatWishBotApplication.class);
 
 	public static void main(String[] args) throws IOException {
-		logger.info("Раскочегариваем нашего бота");
 		Properties properties = new Properties();
 		InputStream is = Example.class.getClassLoader().getResourceAsStream("application.properties");
 		properties.load(is);
-
-		logger.info("Запускаем сервис");
 		SpringApplication.run(WhatWishBotApplication.class, args);
+		logger.info("Пошла инициализация");
 
 	}
 

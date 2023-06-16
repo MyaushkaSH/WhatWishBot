@@ -22,7 +22,7 @@
     </Appenders>
 
     <Loggers>
-        <Logger name="ru.example" level="debug" additivity="false">
+        <Logger name="com.myaushka" level="debug" additivity="false">
             <AppenderRef ref="ASYNC"/>
         </Logger>
         <Root level="error">
