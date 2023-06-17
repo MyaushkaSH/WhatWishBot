@@ -29,7 +29,7 @@ public class MessageHandler {
             logger.info("Обрабатываем команду Start");
             return getStartMessage(chatId);
         } else if (inputText.equals("/whatwish")) {
-            logger.info("Возвращаем смысл жизни");
+            logger.info("Запрашиваем смысл жизни");
             return getWhatMessage(chatId);
         } else {
             logger.info("Ничего не нашлось, шлём куда надо");
