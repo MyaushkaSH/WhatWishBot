@@ -14,6 +14,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import com.myaushka.whatwishbot.constants.bot.BotMessageEnum;
 import com.myaushka.whatwishbot.config.TelegramConfig;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -24,6 +25,7 @@ public class MessageHandler {
     public BotApiMethod<?> answerMessage(Message message) {
         String chatId = message.getChatId().toString();
         String inputText = message.getText();
+        int messageId = message.getMessageId();
 
         logger.debug("Обрабатываем сообщение: " + inputText);
         if (inputText == null) {
@@ -35,17 +37,16 @@ public class MessageHandler {
         } else if (inputText.equals("/whatwish")) {
             logger.info("Запрашиваем смысл жизни");
             return getWhatMessage(chatId);
-        } else if (inputText.contains("@WhatGWishbot,")) {
+        } else if (inputText.contains("@WhatGWishbot ,")) {
             logger.info("Обрабатываем сообщение в ChatGPT");
             String messageText = inputText.substring(inputText.indexOf(",") + 1);
-            return getChatGptAnswer(chatId, messageText);
+            return getChatGptAnswer(chatId, messageText, messageId);
         } else {
             logger.info("Ничего не нашлось, шлём куда надо");
             return getOoMessage(chatId);
         }
     }
-
-    private SendMessage getChatGptAnswer(String chatId, String inputText) {
+    private SendMessage getChatGptAnswer(String chatId, String inputText, int messageId) {
         ChatGPT chatGPT = ChatGPT.builder()
                 .apiKey(telegramConfig.getApiKey())
                 .build()
@@ -53,6 +54,7 @@ public class MessageHandler {
         String res = chatGPT.chat(inputText);
         logger.info(res);
         SendMessage sendMessage= new SendMessage(chatId, res);
+        sendMessage.setReplyToMessageId(messageId);
         return sendMessage;
     }
 
