@@ -18,4 +18,6 @@ public class TelegramConfig {
     String botName;
     @Value("${telegram.bot-token}")
     String botToken;
+    @Value("${chatgpt.api-key}")
+    String apiKey;
 }
