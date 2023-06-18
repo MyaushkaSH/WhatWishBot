@@ -3,18 +3,19 @@ package com.myaushka.whatwishbot.telegram;
 
 import com.plexpt.chatgpt.ChatGPT;
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.groupadministration.BanChatMember;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import com.myaushka.whatwishbot.constants.bot.BotMessageEnum;
 import com.myaushka.whatwishbot.config.TelegramConfig;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -22,7 +23,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class MessageHandler {
     private final TelegramConfig telegramConfig;
     private final Logger logger = LoggerFactory.getLogger(MessageHandler.class);
-    public BotApiMethod<?> answerMessage(Message message) {
+    public BotApiMethod<?> answerMessage(Message message, long senderId) {
         String chatId = message.getChatId().toString();
         String inputText = message.getText();
         int messageId = message.getMessageId();
@@ -31,6 +32,9 @@ public class MessageHandler {
         if (inputText == null) {
             logger.error("Нету текста в этом сообщении");
             throw new IllegalArgumentException();
+        } if (inputText.toLowerCase().contains("спам")) {
+            logger.info("Удаляем спам");
+            return deleteSpamMessage(chatId, messageId);
         } else if (inputText.equals("/start")) {
             logger.info("Обрабатываем команду Start");
             return getStartMessage(chatId);
@@ -46,6 +50,11 @@ public class MessageHandler {
             return getOoMessage(chatId);
         }
     }
+
+    private DeleteMessage deleteSpamMessage(String chatId, int messageId) {
+        return new DeleteMessage(chatId,messageId);
+
+    }
     private SendMessage getChatGptAnswer(String chatId, String inputText, int messageId) {
         ChatGPT chatGPT = ChatGPT.builder()
                 .apiKey(telegramConfig.getApiKey())
@@ -59,17 +68,14 @@ public class MessageHandler {
     }
 
     private SendMessage getStartMessage(String chatId) {
-        SendMessage sendMessage = new SendMessage(chatId, BotMessageEnum.START_MESSAGE.getMessage());
-        return sendMessage;
+        return new SendMessage(chatId, BotMessageEnum.START_MESSAGE.getMessage());
     }
 
     private SendMessage getWhatMessage(String chatId) {
-        SendMessage sendMessage = new SendMessage(chatId, BotMessageEnum.HELP_MESSAGE.getMessage());
-        return sendMessage;
+        return new SendMessage(chatId, BotMessageEnum.HELP_MESSAGE.getMessage());
     }
 
     private SendMessage getOoMessage(String chatId) {
-        SendMessage sendMessage = new SendMessage(chatId, BotMessageEnum.OO_MESSAGE.getMessage());
-        return sendMessage;
+        return new SendMessage(chatId, BotMessageEnum.OO_MESSAGE.getMessage());
     }
 }

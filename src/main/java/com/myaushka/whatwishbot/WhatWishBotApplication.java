@@ -19,7 +19,7 @@ public class WhatWishBotApplication {
 		InputStream is = Example.class.getClassLoader().getResourceAsStream("application.properties");
 		properties.load(is);
 		SpringApplication.run(WhatWishBotApplication.class, args);
-		logger.info("Пошла инициализация");
+		logger.info("Прошла инициализация");
 
 	}
 
