@@ -58,11 +58,8 @@ public class WhatWishBot extends SpringWebhookBot {
         long senderId = message.getFrom().getId();
         String userName = message.getFrom().getUserName();
         logger.info("Разгребаем то дерьмо, что получили от: " + senderId + ", который " + userName);
-            if (message != null) {
-                logger.info("Возвращаем ответ");
-                return messageHandler.answerMessage(update.getMessage(), senderId);
-            }
-        return null;
+        logger.info("Возвращаем ответ");
+        return messageHandler.answerMessage(update.getMessage(), senderId);
     }
 
 }
