@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -54,9 +55,23 @@ public class WhatWishBot extends SpringWebhookBot {
         Message message = update.getMessage();
         long senderId = message.getFrom().getId();
         String userName = message.getFrom().getUserName();
+        String chatId = message.getChatId().toString();
+        String inputText = message.getText();
+        int messageId = message.getMessageId();
+        logger.info("Получили :" + message.getText() + "| Вот это");
         logger.info("Разгребаем то дерьмо, что получили от: " + senderId + ", который " + userName);
-        logger.info("Возвращаем ответ");
-        return messageHandler.answerMessage(update.getMessage(), senderId);
+        if (inputText.toLowerCase().contains("спам")){
+            logger.info("Удаляем спам");
+            return deleteSpamMessage(chatId, messageId);
+
+        } else {
+            logger.info("Возвращаем ответ");
+            return messageHandler.answerMessage(update.getMessage(), senderId);
+        }
+    }
+    private DeleteMessage deleteSpamMessage(String chatId, int messageId) {
+        return new DeleteMessage(chatId,messageId);
+
     }
 
 }

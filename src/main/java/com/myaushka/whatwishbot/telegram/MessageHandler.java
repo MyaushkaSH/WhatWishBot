@@ -32,10 +32,7 @@ public class MessageHandler {
         if (inputText == null) {
             logger.error("Нету текста в этом сообщении");
             throw new IllegalArgumentException();
-        } if (inputText.toLowerCase().contains("спам")) {
-            logger.info("Удаляем спам");
-            return deleteSpamMessage(chatId, messageId);
-        } else if (inputText.equals("/start")) {
+        } if (inputText.equals("/start")) {
             logger.info("Обрабатываем команду Start");
             return getStartMessage(chatId);
         } else if (inputText.equals("/whatwish")) {
@@ -49,11 +46,6 @@ public class MessageHandler {
             logger.info("Ничего не нашлось, шлём куда надо");
             return getOoMessage(chatId);
         }
-    }
-
-    private DeleteMessage deleteSpamMessage(String chatId, int messageId) {
-        return new DeleteMessage(chatId,messageId);
-
     }
     private SendMessage getChatGptAnswer(String chatId, String inputText, int messageId) {
         ChatGPT chatGPT = ChatGPT.builder()
