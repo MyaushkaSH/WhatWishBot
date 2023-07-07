@@ -56,11 +56,11 @@ public class WhatWishBot extends SpringWebhookBot {
         long senderId = message.getFrom().getId();
         String userName = message.getFrom().getUserName();
         String chatId = message.getChatId().toString();
-        String inputText = message.getText();
+        String inputText = message.getText().toLowerCase();
         int messageId = message.getMessageId();
         logger.info("Получили :" + message.getText() + "| Вот это");
         logger.info("Разгребаем то дерьмо, что получили от: " + senderId + ", который " + userName);
-        if (inputText.toLowerCase().contains("спам")){
+        if (inputText.contains("спам") || inputText.contains("https://") || inputText.contains("http://")){
             logger.info("Удаляем спам");
             return deleteSpamMessage(chatId, messageId);
 
