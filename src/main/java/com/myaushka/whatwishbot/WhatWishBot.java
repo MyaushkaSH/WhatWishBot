@@ -5,7 +5,6 @@ import com.myaushka.whatwishbot.constants.bot.BotMessageEnum;
 import com.myaushka.whatwishbot.telegram.MessageHandler;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.slf4j.Logger;
@@ -18,8 +17,6 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.starter.SpringWebhookBot;
-
-import java.io.IOException;
 
 @Getter
 @Setter
@@ -53,7 +50,7 @@ public class WhatWishBot extends SpringWebhookBot {
         }
     }
 
-    private BotApiMethod<?> handleUpdate(Update update) throws IOException {
+    private BotApiMethod<?> handleUpdate(Update update) {
         Message message = update.getMessage();
         long senderId = message.getFrom().getId();
         String userName = message.getFrom().getUserName();
