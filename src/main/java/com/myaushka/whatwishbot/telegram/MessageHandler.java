@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import com.myaushka.whatwishbot.constants.bot.BotMessageEnum;
 import com.myaushka.whatwishbot.config.TelegramConfig;
@@ -35,14 +36,22 @@ public class MessageHandler {
         } else if (inputText.equals("/whatwish")) {
             logger.info("Запрашиваем смысл жизни");
             return getWhatMessage(chatId);
-        } else if (inputText.contains("@WhatGWishbot ,")) {
+        } else if (inputText.contains("@WhatGWishbot ,") || inputText.contains("@WhatGWishbot,")) {
             logger.info("Обрабатываем сообщение в ChatGPT");
             String messageText = inputText.substring(inputText.indexOf(",") + 1);
             return getChatGptAnswer(chatId, messageText, messageId);
-        } else {
+        } else if (inputText.contains("Спам")) {
+            return deleteSpamMessage(chatId, messageId);
+
+        }else {
             logger.info("Ничего не нашлось, шлём куда надо");
             return getOoMessage(chatId);
         }
+    }
+
+    private DeleteMessage deleteSpamMessage(String chatId, int messageId) {
+        return new DeleteMessage(chatId,messageId);
+
     }
     private SendMessage getChatGptAnswer(String chatId, String inputText, int messageId) {
         ChatGPT chatGPT = ChatGPT.builder()
