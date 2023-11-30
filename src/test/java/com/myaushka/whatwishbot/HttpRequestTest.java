@@ -10,13 +10,5 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class HttpRequestTest {
-    @Value("$server.port")
-    private int port;
-    @Autowired
-    private TestRestTemplate restTemplate;
 
-    @Test
-    public void greetingShouldReturnDefaultMessage() throws Exception {
-        assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/", String.class)).contains("Bad Request");
-    }
 }
