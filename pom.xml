@@ -181,18 +181,12 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${basedir}/src/main/resources/</outputDirectory>
+							<outputDirectory>${basedir}/src/main/resources/templates</outputDirectory>
 							<resources>
 								<resource>
 									<directory>${basedir}/src/main/resources/templates</directory>
 									<includes>
 										<include>*mustache</include>
-									</includes>
-								</resource>
-								<resource>
-									<directory>${basedir}/src/main/resources/static/images</directory>
-									<includes>
-										<include>*jpg</include>
 									</includes>
 								</resource>
 							</resources>
