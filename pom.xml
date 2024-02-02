@@ -163,6 +163,12 @@
 					<include>*mustache</include>
 				</includes>
 			</resource>
+			<resource>
+				<directory>${basedir}/src/main/resources/static/images</directory>
+				<includes>
+					<include>*jpg</include>
+				</includes>
+			</resource>
 		</resources>
 		<plugins>
 			<plugin>
@@ -175,12 +181,18 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${basedir}/src/main/resources/templates</outputDirectory>
+							<outputDirectory>${basedir}/src/main/resources/</outputDirectory>
 							<resources>
 								<resource>
 									<directory>${basedir}/src/main/resources/templates</directory>
 									<includes>
 										<include>*mustache</include>
+									</includes>
+								</resource>
+								<resource>
+									<directory>${basedir}/src/main/resources/static/images</directory>
+									<includes>
+										<include>*jpg</include>
 									</includes>
 								</resource>
 							</resources>
@@ -208,6 +220,9 @@
 					</execution>
 				</executions>
 				<configuration>
+					<outputDirectory>${basedir}/target</outputDirectory>
+					<finalName>WhatWish</finalName>
+					<addResources>true</addResources>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
