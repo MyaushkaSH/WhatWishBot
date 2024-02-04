@@ -14,5 +14,4 @@ public class WhatWishBotApplication {
 		logger.info("Прошла инициализация");
 
 	}
-
 }
