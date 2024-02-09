@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.myaushka</groupId>
 	<artifactId>WhatWishBot</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.4-SNAPSHOT</version>
 	<name>WhatWishBot</name>
 	<description>WhatWishBot</description>
 	<packaging>jar</packaging>

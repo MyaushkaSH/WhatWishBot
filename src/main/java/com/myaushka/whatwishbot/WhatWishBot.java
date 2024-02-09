@@ -19,6 +19,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.starter.SpringWebhookBot;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -27,6 +32,7 @@ public class WhatWishBot extends SpringWebhookBot {
     String botPath;
     String botUsername;
     String botToken;
+    private HashMap<String, Integer> knownUsers = new HashMap<>();
 
     MessageHandler messageHandler;
 
@@ -37,6 +43,7 @@ public class WhatWishBot extends SpringWebhookBot {
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
         logger.info("Получили сообщеньку, разбираем");
+        logger.info(String.valueOf(update));
         try {
             return handleUpdate(update);
         } catch (IllegalArgumentException e) {
@@ -54,16 +61,47 @@ public class WhatWishBot extends SpringWebhookBot {
     private BotApiMethod<?> handleUpdate(Update update) {
         Message message = update.getMessage();
         long senderId = message.getFrom().getId();
+        String firstName = message.getFrom().getFirstName();
         String userName = message.getFrom().getUserName();
-        String chatId = message.getChatId().toString();
-        String inputText = message.getText().toLowerCase();
         int messageId = message.getMessageId();
-        logger.info("Получили :" + message.getText() + "| Вот это");
-        logger.info("Разгребаем то дерьмо, что получили от: " + senderId + ", который " + userName);
-        if (inputText.contains("спам") || inputText.contains("https://") || inputText.contains("http://")){
+        String inputText = message.getText();
+        boolean isSpam = false;
+        if (!message.getNewChatMembers().isEmpty()) {
+            logger.info("Похоже, тут у нас новый колека, обрабатываем");
+            Integer joinTime = message.getDate();
+            //long personalMessage = message.getChatId();
+            knownUsers.put(userName, joinTime);
+            logger.info("Записали: " + knownUsers);
+            logger.info("К нам присоединился: " + firstName + " по времнеи в: " + joinTime +
+                    "Писать ему: @" + userName);
+            logger.info("Закончили обработку");
+            return messageHandler.answerMessage(update.getMessage(), senderId);
+        } else {
+            int joinDate = knownUsers.get(userName);
+            int messageDiffTime = message.getDate() - joinDate;
+            int minimalTime = 86400;
+            logger.info("Разбираем сообщение от " + messageDiffTime);
+            Date dateDiff = new Date(messageDiffTime);
+            logger.info("Челик в чате уже: " + dateDiff + "");
+            if (messageDiffTime < minimalTime) {
+                logger.info("Кандидат на спамера");
+                if (inputText.contains("http://") || inputText.contains("https://") || message.getForwardFrom() != null){
+                    isSpam = true;
+                } else {
+                    logger.info("Похоже, не спамер, едем дальше");
+                }
+
+            } else {
+                logger.info("Похоже что товарищ с нами уже давно");
+            }
+
+        }
+        if (isSpam){
+            String chatId = message.getChatId().toString();
+            logger.info("Получили :" + inputText + "| Вот это");
+            logger.info("Разгребаем то дерьмо, что получили от: " + senderId + ", который " + userName);
             logger.info("Удаляем спам");
             return deleteSpamMessage(chatId, messageId);
-
         } else {
             logger.info("Возвращаем ответ");
             return messageHandler.answerMessage(update.getMessage(), senderId);
