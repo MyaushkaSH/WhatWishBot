@@ -13,17 +13,9 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
-import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.starter.SpringWebhookBot;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
 
 import java.util.HashMap;
 
@@ -53,6 +45,10 @@ public class WhatWishBot extends SpringWebhookBot {
             logger.error("Не могу обработать сообщение, возвращаю отбивку");
             return new SendMessage(update.getMessage().getChatId().toString(),
                     BotMessageEnum.EXCEPTION_ILLEGAL_MESSAGE.getMessage());
+        } catch (NullPointerException e) {
+            logger.error("Умные люди промолчат на это");
+            return new SendMessage(update.getMessage().getChatId().toString(),
+                    BotMessageEnum.EXCEPTION_WHAT_THE_FUCK.getMessage());
         } catch (Exception e) {
             logger.error("В первый раз такого страшного ипать придётся");
             e.printStackTrace();
