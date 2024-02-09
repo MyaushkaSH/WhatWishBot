@@ -90,7 +90,6 @@ public class WhatWishBot extends SpringWebhookBot {
                 } else {
                     logger.info("Похоже, не спамер, едем дальше");
                 }
-
             } else {
                 logger.info("Похоже что товарищ с нами уже давно");
             }
