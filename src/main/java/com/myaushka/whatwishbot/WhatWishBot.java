@@ -16,6 +16,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.starter.SpringWebhookBot;
+import com.myaushka.whatwishbot.config.TelegramConfig;
 
 import java.util.HashMap;
 
@@ -24,15 +25,19 @@ import java.util.HashMap;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class WhatWishBot extends SpringWebhookBot {
     private final Logger logger = LoggerFactory.getLogger(WhatWishBot.class);
+    private final TelegramConfig telegramConfig;
+
     String botPath;
     String botUsername;
     String botToken;
+
     private HashMap<String, Integer> knownUsers = new HashMap<>();
 
     MessageHandler messageHandler;
 
-    public WhatWishBot(SetWebhook setWebhook, MessageHandler messageHandler) {
+    public WhatWishBot(SetWebhook setWebhook, TelegramConfig telegramConfig, MessageHandler messageHandler) {
         super(setWebhook);
+        this.telegramConfig = telegramConfig;
         this.messageHandler = messageHandler;
     }
     @Override
@@ -66,7 +71,9 @@ public class WhatWishBot extends SpringWebhookBot {
         int messageId = message.getMessageId();
         String inputText = message.getText();
         Integer messageDate = message.getDate();
+
         boolean isSpam = false;
+        //Примитивный антиспам
         if (!message.getNewChatMembers().isEmpty()) {
             logger.info("Похоже, тут у нас новый колека, обрабатываем");
             //long personalMessage = message.getChatId();
@@ -85,8 +92,9 @@ public class WhatWishBot extends SpringWebhookBot {
             }
             int joinDate = knownUsers.get(userName);
             int messageDiffTime = message.getDate() - joinDate;
-            int minimalTime = 86400;
-            logger.info("Разбираем сообщение от " + messageDiffTime);
+            int minimalTime = telegramConfig.getAntispamTimer();
+            logger.info("Антиспам тайменр у нас такой: " + minimalTime);
+            logger.info("Разбираем сообщение от " + userName);
             logger.info("Челик в чате уже: " + messageDiffTime + "секунд");
             logger.info("На текущий момент знаем этих товарищей: " + knownUsers);
             if (messageDiffTime < minimalTime) {

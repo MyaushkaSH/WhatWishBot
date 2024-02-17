@@ -20,7 +20,7 @@ public class SpringConfig {
     @Bean
     public WhatWishBot springWebhookBot(SetWebhook setWebhook,
                                         MessageHandler messageHandler) {
-        WhatWishBot bot = new WhatWishBot(setWebhook, messageHandler);
+        WhatWishBot bot = new WhatWishBot(setWebhook, telegramConfig, messageHandler);
 
         bot.setBotPath(telegramConfig.getWebhookPath());
         bot.setBotUsername(telegramConfig.getBotName());

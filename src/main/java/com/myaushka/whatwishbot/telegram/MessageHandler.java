@@ -43,7 +43,7 @@ public class MessageHandler {
         } else if (inputText.contains("Спам")) {
             return deleteSpamMessage(chatId, messageId);
 
-        }else {
+        } else {
             logger.info("Ничего не нашлось, шлём куда надо");
             return null;//getOoMessage(chatId);
         }

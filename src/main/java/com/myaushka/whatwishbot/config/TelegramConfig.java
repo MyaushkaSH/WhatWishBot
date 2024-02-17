@@ -20,4 +20,6 @@ public class TelegramConfig {
     String botToken;
     @Value("${chatgpt.api-key}")
     String apiKey;
+    @Value("${telegram.antispam-timer}")
+    Integer antispamTimer;
 }
