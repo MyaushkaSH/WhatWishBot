@@ -73,15 +73,17 @@ public class WhatWishBot extends SpringWebhookBot {
         String inputText = message.getText();
         Integer messageDate = message.getDate();
         boolean isSpam = false;
+        boolean isForwarded = false;
         String messageType = "";
+        if (message.getForwardDate() != null) {
+            logger.info("Это сообщение переслали");
+            isForwarded = true;
+        }
 
         if (update.hasMessage() && update.getMessage().hasText()) {
             logger.info("Похоже, поймали сообщение " + update.hasMessage());
             messageType = "Text";
-        } else if (message.getForwardFrom() != null) {
-            logger.info("Это сообщение переслали");
-            messageType = "Forwarded";
-        }else {
+        } else {
             logger.info("Это не совсем сообщенька, обрабатываем по-другому");
         }
 
@@ -112,19 +114,17 @@ public class WhatWishBot extends SpringWebhookBot {
             logger.info("Смотрим ещё на это поле: " + message.getForwardFrom());
             if (messageDiffTime < minimalTime) {
                 logger.info("Кандидат на спамера");
-                if (messageType.equals("Text") || messageType.equals("Forwarded")){
-                    logger.info("Похоже, это текст");
-                    if (messageType.equals("Forwarded")) {
-                        logger.info("Поймали спамера");
-                        logger.info("По такому признаку: Переслал сообщение: " + message.getForwardFrom());
-                        isSpam = true;
-                    } else if (inputText.contains("http://") || inputText.contains("https://")){
+                if (isForwarded) {
+                    logger.info("Переслал сообщение");
+                    isSpam = true;
+                } else if (messageType.equals("Text")) {
+                    logger.info("Проверяем по тексту");
+                    if (inputText.contains("http://") || inputText.contains("https://")){
                         logger.info("Попался на ссылке");
                         isSpam = true;
                     } else {
                         logger.info("Обработали тескт, кажись не спамер");
                     }
-
                 } else {
                     logger.info("Похоже, не спамер, едем дальше");
                 }
