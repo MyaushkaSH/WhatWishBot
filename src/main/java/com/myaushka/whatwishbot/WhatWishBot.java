@@ -83,8 +83,9 @@ public class WhatWishBot extends SpringWebhookBot {
         if (update.hasMessage() && update.getMessage().hasText()) {
             logger.info("Похоже, поймали сообщение " + update.hasMessage());
             messageType = "Text";
-        } else {
-            logger.info("Это не совсем сообщенька, обрабатываем по-другому");
+        } else if (update.getMessage().hasPhoto()) {
+            logger.info("Это фоточка");
+            messageType = "Photo";
         }
 
         //Примитивный антиспам
@@ -125,6 +126,9 @@ public class WhatWishBot extends SpringWebhookBot {
                     } else {
                         logger.info("Обработали тескт, кажись не спамер");
                     }
+                } else if (messageType.equals("Photo")){
+                    logger.info("Похоже, спамер, шлёт свою дичь картинкой");
+                    isSpam = true;
                 } else {
                     logger.info("Похоже, не спамер, едем дальше");
                 }
