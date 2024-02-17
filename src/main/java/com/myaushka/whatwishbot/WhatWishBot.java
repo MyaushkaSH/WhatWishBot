@@ -73,12 +73,15 @@ public class WhatWishBot extends SpringWebhookBot {
         String inputText = message.getText();
         Integer messageDate = message.getDate();
         boolean isSpam = false;
-        boolean isMessage = false;
+        String messageType = "";
 
         if (update.hasMessage() && update.getMessage().hasText()) {
             logger.info("Похоже, поймали сообщение " + update.hasMessage());
-            isMessage = true;
-        } else {
+            messageType = "Text";
+        } else if (message.getForwardFrom() != null) {
+            logger.info("Это сообщение переслали");
+            messageType = "Forwarded";
+        }else {
             logger.info("Это не совсем сообщенька, обрабатываем по-другому");
         }
 
@@ -106,10 +109,22 @@ public class WhatWishBot extends SpringWebhookBot {
             logger.info("Разбираем сообщение от " + userName);
             logger.info("Челик в чате уже: " + messageDiffTime + "секунд");
             logger.info("На текущий момент знаем этих товарищей: " + knownUsers);
+            logger.info("Смотрим ещё на это поле: " + message.getForwardFrom());
             if (messageDiffTime < minimalTime) {
                 logger.info("Кандидат на спамера");
-                if (isMessage && (message.getForwardFrom() != null || inputText.contains("http://") || inputText.contains("https://"))){
-                    isSpam = true;
+                if (messageType.equals("Text") || messageType.equals("Forwarded")){
+                    logger.info("Похоже, это текст");
+                    if (messageType.equals("Forwarded")) {
+                        logger.info("Поймали спамера");
+                        logger.info("По такому признаку: Переслал сообщение: " + message.getForwardFrom());
+                        isSpam = true;
+                    } else if (inputText.contains("http://") || inputText.contains("https://")){
+                        logger.info("Попался на ссылке");
+                        isSpam = true;
+                    } else {
+                        logger.info("Обработали тескт, кажись не спамер");
+                    }
+
                 } else {
                     logger.info("Похоже, не спамер, едем дальше");
                 }
@@ -124,8 +139,8 @@ public class WhatWishBot extends SpringWebhookBot {
             logger.info("Разгребаем то дерьмо, что получили от: " + senderId + ", который " + userName);
             logger.info("Удаляем спам");
             return deleteSpamMessage(chatId, messageId);
-        } else if (isMessage) {
-            logger.info("Возвращаем ответ");
+        } else if (messageType.equals("Text")) {
+            logger.info("Возвращаем ответ на текст");
             return messageHandler.answerMessage(update.getMessage(), senderId);
         } else {
             logger.info("Возвращаем ответ не на текст");
