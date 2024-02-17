@@ -51,7 +51,8 @@ public class WhatWishBot extends SpringWebhookBot {
             return new SendMessage(update.getMessage().getChatId().toString(),
                     BotMessageEnum.EXCEPTION_ILLEGAL_MESSAGE.getMessage());
         } catch (NullPointerException e) {
-            logger.error("Умные люди промолчат на это");
+            logger.error("Умные люди промолчат на это ");
+            e.printStackTrace();
             return new SendMessage(update.getMessage().getChatId().toString(),
                     BotMessageEnum.EXCEPTION_WHAT_THE_FUCK.getMessage());
         } catch (Exception e) {
@@ -99,7 +100,7 @@ public class WhatWishBot extends SpringWebhookBot {
             logger.info("На текущий момент знаем этих товарищей: " + knownUsers);
             if (messageDiffTime < minimalTime) {
                 logger.info("Кандидат на спамера");
-                if (inputText.contains("http://") || inputText.contains("https://") || message.getForwardFrom() != null){
+                if (message.getForwardFrom() != null || inputText.contains("http://") || inputText.contains("https://")){
                     isSpam = true;
                 } else {
                     logger.info("Похоже, не спамер, едем дальше");
