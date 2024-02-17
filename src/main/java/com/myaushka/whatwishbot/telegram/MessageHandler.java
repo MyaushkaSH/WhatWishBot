@@ -45,7 +45,7 @@ public class MessageHandler {
 
         }else {
             logger.info("Ничего не нашлось, шлём куда надо");
-            return getOoMessage(chatId);
+            return null;//getOoMessage(chatId);
         }
     }
 

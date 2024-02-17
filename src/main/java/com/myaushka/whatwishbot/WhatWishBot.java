@@ -52,8 +52,9 @@ public class WhatWishBot extends SpringWebhookBot {
         } catch (Exception e) {
             logger.error("В первый раз такого страшного ипать придётся");
             e.printStackTrace();
-            return new SendMessage(update.getMessage().getChatId().toString(),
-                    BotMessageEnum.EXCEPTION_WHAT_THE_FUCK.getMessage());
+            return null;
+            /*new SendMessage(update.getMessage().getChatId().toString(),
+                    BotMessageEnum.EXCEPTION_WHAT_THE_FUCK.getMessage());*/
         }
     }
 
