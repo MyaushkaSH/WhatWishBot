@@ -75,7 +75,7 @@ public class WhatWishBot extends SpringWebhookBot {
         boolean isSpam = false;
         boolean isMessage = false;
 
-        if (update.hasMessage()) {
+        if (update.hasMessage() && update.getMessage().hasText()) {
             logger.info("Похоже, поймали сообщение " + update.hasMessage());
             isMessage = true;
         } else {
