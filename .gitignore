@@ -36,4 +36,3 @@ build/
 /src/main/resources/local/application.properties
 /src/main/resources/dev/application.properties
 /src/main/resources/application.yaml
-/redis.conf
